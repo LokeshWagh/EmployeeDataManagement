@@ -19,11 +19,17 @@ const EmployeeSchema = new mongoose.Schema({
       'Please fill a valid email address'
     ]
   },
+  position: {
+    type: String,
+    required: true,
+    trim:true
+  },
   salary: {
     type: Number,
     required: true,
     min: 0
   },
+
   department: {
     type: String,
     required: true,
