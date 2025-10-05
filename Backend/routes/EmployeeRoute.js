@@ -2,27 +2,42 @@ const express = require('express');
 const router = express.Router();
 const Employee = require('../models/Employes');
 
-// GET /api/employees with search functionality
+// GET /api/employees/positions (for unique positions dropdown)
+router.get('/positions', async (req, res) => {
+  try {
+    const positions = await Employee.distinct('position');
+    res.status(200).json(positions);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/employees (supports both search and position filter)
 router.get('/', async (req, res) => {
   try {
-    const { search } = req.query;
+    const { search, position } = req.query;
     let filter = {};
+    const filterConditions = [];
 
+    if (position) {
+      filterConditions.push({ position: position });
+    }
     if (search) {
-      const searchRegex = new RegExp(search, 'i'); // case-insensitive
-      filter = {
+      const searchRegex = new RegExp(search, 'i');
+      filterConditions.push({
         $or: [
           { name: { $regex: searchRegex } },
           { email: { $regex: searchRegex } },
-          { position: { $regex: searchRegex } },
           { department: { $regex: searchRegex } },
         ],
-      };
+      });
+    }
+    if (filterConditions.length > 0) {
+      filter = { $and: filterConditions };
     }
 
     const employees = await Employee.find(filter);
     res.status(200).json(employees);
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -31,9 +46,7 @@ router.get('/', async (req, res) => {
 // POST /api/employees/addemployee
 router.post('/addemployee', async (req, res) => {
   try {
-    // Destructure fields from the request body
     const { name, email, position, salary, department } = req.body;
-    // Create a new employee in MongoDB Atlas
     const newEmployee = await Employee.create({
       name,
       email,
@@ -41,7 +54,6 @@ router.post('/addemployee', async (req, res) => {
       salary,
       department
     });
-    // Respond with the saved employee
     res.status(201).json(newEmployee);
   } catch (error) {
     res.status(400).json({ error: error.message });

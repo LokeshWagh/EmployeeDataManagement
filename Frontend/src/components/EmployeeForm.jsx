@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 
 const EmployeeSchema = Yup.object().shape({
   name: Yup.string()
@@ -24,6 +25,21 @@ const EmployeeSchema = Yup.object().shape({
 });
 
 function EmployeeForm({ initialValues, onSubmit, isEditing }) {
+  // Wrapper for Formik's onSubmit that shows toast on success
+  const handleSubmit = async (values, actions) => {
+    try {
+      await onSubmit(values, actions); // Your actual submit logic (add/edit)
+      toast.success(
+        isEditing ? 'Employee successfully updated!' : 'Employee successfully created!'
+      );
+      actions.setSubmitting(false);
+    } catch (error) {
+      // If onSubmit throws error, show error toast
+      toast.error('An error occurred. Please try again.');
+      actions.setSubmitting(false);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-md bg-white bg-opacity-90 p-8 rounded-2xl shadow-xl backdrop-blur-lg">
@@ -33,7 +49,7 @@ function EmployeeForm({ initialValues, onSubmit, isEditing }) {
         <Formik
           initialValues={initialValues}
           validationSchema={EmployeeSchema}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
           enableReinitialize
         >
           {({ isSubmitting }) => (
@@ -43,7 +59,7 @@ function EmployeeForm({ initialValues, onSubmit, isEditing }) {
                 <Field
                   name="name"
                   id="name"
-                  placeholder="Eg: John Doe"
+                  placeholder="Eg: Lokesh Wagh"
                   className="w-full border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
                 <ErrorMessage name="name" component="div" className="text-red-500 text-xs mt-1" />
@@ -54,7 +70,7 @@ function EmployeeForm({ initialValues, onSubmit, isEditing }) {
                   name="email"
                   id="email"
                   type="email"
-                  placeholder="Eg: john@example.com"
+                  placeholder="Eg: Lokesh@example.com"
                   className="w-full border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
                 <ErrorMessage name="email" component="div" className="text-red-500 text-xs mt-1" />
