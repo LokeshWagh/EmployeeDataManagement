@@ -1,21 +1,32 @@
-
-// server/routes/employeeRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const Employee = require('../models/Employes');
 
-
-// GET /api/employees
+// GET /api/employees with search functionality
 router.get('/', async (req, res) => {
   try {
-    const employees = await Employee.find();
+    const { search } = req.query;
+    let filter = {};
+
+    if (search) {
+      const searchRegex = new RegExp(search, 'i'); // case-insensitive
+      filter = {
+        $or: [
+          { name: { $regex: searchRegex } },
+          { email: { $regex: searchRegex } },
+          { position: { $regex: searchRegex } },
+          { department: { $regex: searchRegex } },
+        ],
+      };
+    }
+
+    const employees = await Employee.find(filter);
     res.status(200).json(employees);
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 // POST /api/employees/addemployee
 router.post('/addemployee', async (req, res) => {
@@ -80,6 +91,5 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 module.exports = router;

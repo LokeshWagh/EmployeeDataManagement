@@ -25,7 +25,7 @@ const EmployeeSchema = Yup.object().shape({
 
 function EmployeeForm({ initialValues, onSubmit, isEditing }) {
   return (
-    <div className="flex flex-col items-center justify-center  ">
+    <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-md bg-white bg-opacity-90 p-8 rounded-2xl shadow-xl backdrop-blur-lg">
         <h2 className="text-2xl font-bold text-center mb-8">
           {isEditing ? 'Edit Employee' : 'Add Employee'}
@@ -98,8 +98,12 @@ function EmployeeForm({ initialValues, onSubmit, isEditing }) {
               >
                 {isEditing ? 'Update Employee' : 'Add Employee'}
               </button>
-             <Link to="/" className="block text-center w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition" > Back To Home </Link>
-
+              <Link
+                to="/"
+                className="block text-center w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition mt-2"
+              >
+                Back To Home
+              </Link>
             </Form>
           )}
         </Formik>

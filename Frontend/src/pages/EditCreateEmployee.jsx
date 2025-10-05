@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import EmployeeForm from '../components/EmployeeForm'; // Adjust path as needed
+import EmployeeForm from '../components/EmployeeForm'; // Adjust path as necessary
 
 function EditCreateEmployee() {
   const { id } = useParams();
@@ -18,35 +18,40 @@ function EditCreateEmployee() {
   useEffect(() => {
     if (isEditing) {
       axios.get(`http://localhost:3000/api/employees/${id}`)
-        .then(res => setForm(res.data))
+        .then(res => {
+          const data = res.data;
+          // Defensive defaults to avoid undefined fields
+          setForm({
+            name: data.name || '',
+            email: data.email || '',
+            position: data.position || '',
+            salary: data.salary || '',
+            department: data.department || '',
+          });
+        })
         .catch(err => console.error(err));
     }
   }, [id, isEditing]);
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:3000/api/employees/${id}`, form);
+        await axios.put(`http://localhost:3000/api/employees/${id}`, values);
       } else {
-        await axios.post('http://localhost:3000/api/employees/addemployee', form);
+        await axios.post('http://localhost:3000/api/employees/addemployee', values);
       }
+      setSubmitting(false);
       navigate('/');
     } catch (err) {
+      setSubmitting(false);
       alert('Error: ' + (err.response?.data?.error || err.message));
     }
   };
 
   return (
     <div className="max-w-xl mx-auto mt-8 p-6 bg-white rounded-xl shadow">
-      {/* <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit' : 'Add'} Employee</h2> */}
       <EmployeeForm
-        values={form}
-        onChange={handleChange}
+        initialValues={form}
         onSubmit={handleSubmit}
         isEditing={isEditing}
       />
