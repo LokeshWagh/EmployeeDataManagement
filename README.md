@@ -10,8 +10,17 @@ A robust and efficient full-stack application built on the MERN stack to provide
 
 The architecture features a decoupled frontend and backend, communicating via a clean RESTful API. The system is not just a simple data manager; it's a showcase of modern web development practices, including state management, performance optimization, and a responsive UI.
 
+##Home Page
 ![Project Screenshot](Frontend/src/assets/HomePage.png)
 
+## From 
+![Project Screenshot](Frontend/src/assets/Form.png)
+
+## Form Validation
+![Project Screenshot](Frontend/src/assets/formvalidation.png)
+
+## Searching Feature 
+![Project Screenshot](Frontend/src/assets/search.png)
 
 
 ##  Key Features
