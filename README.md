@@ -63,7 +63,7 @@ This project is built using the MERN stack, leveraging the power of each technol
 
 1. Clone the repository:
 ```
-git clone git@github.com:LokeshWagh/EmployeeDataManagement.git . 
+git clone git@github.com:LokeshWagh/EmployeeDataManagement.git 
 cd EmployeeDataManagement
 ```
 
